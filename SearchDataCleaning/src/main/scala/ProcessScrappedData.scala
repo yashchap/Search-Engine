@@ -1,8 +1,6 @@
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
 
 object ProcessScrappedData {
   def main(args: Array[String]): Unit = {
