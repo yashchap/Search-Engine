@@ -2,7 +2,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +22,7 @@ public class FetchImages {
         Map<String, String> imageMap = new HashMap<>();
         try {
             Document doc = Jsoup.parse(new File(path), "utf-8");
+            doc.select("script").remove();
             Elements imageTags = doc.getElementsByTag("img");
             for (Element imageTag : imageTags) {
                 String alt = imageTag.attr("alt");
@@ -50,6 +50,11 @@ public class FetchImages {
                     }
                 }
             }
+            FileWriter mainFw = new FileWriter(path, false);
+            mainFw.write(doc.toString());
+            mainFw.close();
+
+
 
         } catch (IOException e) {
             System.out.println("File IO exception");
@@ -63,7 +68,7 @@ public class FetchImages {
         File folder = new File(DIRPATH);
         File[] listOfFiles = folder.listFiles();
         try {
-            FileWriter fw = new FileWriter(OUTPUTPATH + OUTPUTFILE);
+            FileWriter fw = new FileWriter(OUTPUTPATH + OUTPUTFILE, false);
 
             for (File file: listOfFiles) {
                 if (file.isFile()) {
@@ -75,6 +80,7 @@ public class FetchImages {
                     }
                 }
             }
+            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
