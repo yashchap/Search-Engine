@@ -45,7 +45,7 @@ object ProcessScrappedData {
     val imageMap = filesRDD.map{
       text => processText(text)
     }
-    imageMap.saveAsTextFile("2.txt")
+    imageMap.saveAsTextFile(outputFile)
 
 
   }
