@@ -14,6 +14,7 @@ public class CreatePageRankingGraph {
     private static final String DATADIR = "../SearchWebCrawler/data/reuters/";
     private static final String OUTPUTDIR = "../SearchWebCrawler/data/reuters/pagerank/";
     private static final String OUTPUTFILE = "pagerank.txt";
+    private static final String OUTPUTFILEADJ = "pagerank_adj.txt";
 
 
     public static void main(String[] args) {
@@ -21,8 +22,10 @@ public class CreatePageRankingGraph {
         File[] listOfFiles = dir.listFiles();
         try {
             FileWriter outputWriter = new FileWriter(OUTPUTDIR + OUTPUTFILE);
+            FileWriter outputWriterAdj = new FileWriter(OUTPUTDIR + OUTPUTFILEADJ);
+            Map<String, List<String>> graph = new HashMap<>();
             Map<String, String> urlPathMap = new HashMap<>();
-            List<List<String>> graph = new ArrayList<>();
+            List<List<String>> graph_helper = new ArrayList<>();
             for (File file: listOfFiles) {
                 if (file.isFile()) {
                     String filepath = DATADIR + file.getName();
@@ -40,7 +43,7 @@ public class CreatePageRankingGraph {
                             List<String> link = new ArrayList<>();
                             link.add(parentUrl);
                             link.add(url);
-                            graph.add(link);
+                            graph_helper.add(link);
                         }
                         reader.close();
                     } catch (Exception e) {
@@ -48,14 +51,30 @@ public class CreatePageRankingGraph {
                     }
                 }
             }
-            for(List<String> nodes: graph) {
+            for(List<String> nodes: graph_helper) {
                 String startNode = urlPathMap.get(nodes.get(0));
                 String endNode = urlPathMap.get(nodes.get(1));
                 if (startNode != null && endNode != null) {
+                    if(graph.containsKey(startNode)){
+                        graph.get(startNode).add(endNode);
+                    }
+                    else{
+                        List<String> node = new ArrayList<>();
+                        node.add(endNode);
+                        graph.put(startNode, node);
+                    }
                     outputWriter.write(startNode + " " + endNode + "\n");
                 }
             }
+            for(String start: graph.keySet()){
+                outputWriterAdj.write(start);
+                for(String child: graph.get(start)){
+                    outputWriterAdj.write(" "+child);
+                }
+                outputWriterAdj.write("\n");
+            }
             outputWriter.close();
+            outputWriterAdj.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
