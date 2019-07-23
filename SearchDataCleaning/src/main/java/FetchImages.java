@@ -6,10 +6,11 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 
 public class FetchImages {
@@ -17,6 +18,7 @@ public class FetchImages {
     private static final String DIRPATH = "../SearchWebCrawler/data/reuters/html/";
     private static final String OUTPUTPATH = "../SearchWebCrawler/data/reuters/image/";
     private static final String OUTPUTFILE = "imagemap.csv";
+    private static final String OUTPUTFILEJSON = "imagemap.json";
 
     private static Map<String, String> fetchData(String path) {
         Map<String, String> imageMap = new HashMap<>();
@@ -69,18 +71,25 @@ public class FetchImages {
         File[] listOfFiles = folder.listFiles();
         try {
             FileWriter fw = new FileWriter(OUTPUTPATH + OUTPUTFILE, false);
-
+            FileWriter fw_json = new FileWriter(OUTPUTPATH + OUTPUTFILEJSON, false);
+            JSONArray imageMapArr = new JSONArray();
             for (File file: listOfFiles) {
                 if (file.isFile()) {
                     String filepath = DIRPATH + file.getName();
                     Map<String, String> imageMap = fetchData(filepath);
                     System.out.println("Processing: "+ filepath);
                     for (String url: imageMap.keySet()) {
+                        JSONObject imageObj = new JSONObject();
+                        imageObj.put("url", url);
+                        imageObj.put("alt", imageMap.get(url));
+                        imageMapArr.add(imageObj);
                         fw.write(url + ";" + imageMap.get(url)+"\n");
                     }
                 }
             }
+            fw_json.write(imageMapArr.toJSONString());
             fw.close();
+            fw_json.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
