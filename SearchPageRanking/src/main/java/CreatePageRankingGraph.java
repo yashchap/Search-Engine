@@ -15,6 +15,7 @@ public class CreatePageRankingGraph {
     private static final String OUTPUTDIR = "../SearchWebCrawler/data/reuters/pagerank/";
     private static final String OUTPUTFILE = "pagerank.txt";
     private static final String OUTPUTFILEADJ = "pagerank_adj.txt";
+    private static final String URLPATHMAPFILE = "url_map.txt";
 
 
     public static void main(String[] args) {
@@ -23,8 +24,10 @@ public class CreatePageRankingGraph {
         try {
             FileWriter outputWriter = new FileWriter(OUTPUTDIR + OUTPUTFILE);
             FileWriter outputWriterAdj = new FileWriter(OUTPUTDIR + OUTPUTFILEADJ);
+            FileWriter outputWriterUrlMap = new FileWriter(OUTPUTDIR + URLPATHMAPFILE);
             Map<String, List<String>> graph = new HashMap<>();
             Map<String, String> urlPathMap = new HashMap<>();
+            Map<String, String> urlFileMap = new HashMap<>();
             List<List<String>> graph_helper = new ArrayList<>();
             for (File file: listOfFiles) {
                 if (file.isFile()) {
@@ -39,7 +42,8 @@ public class CreatePageRankingGraph {
                             JSONObject data = (JSONObject) metaData.get(url);
                             String parentUrl = (String) data.get("parentPage");
                             String childPage = (String) data.get("html");
-                            urlPathMap.put(url, childPage);
+                            urlPathMap.put(childPage, url);
+                            urlFileMap.put(childPage, url);
                             List<String> link = new ArrayList<>();
                             link.add(parentUrl);
                             link.add(url);
@@ -66,6 +70,9 @@ public class CreatePageRankingGraph {
                     outputWriter.write(startNode + " " + endNode + "\n");
                 }
             }
+            for(String path: urlFileMap.keySet()) {
+                outputWriterUrlMap.write(path + " " + urlFileMap.get(path) + "\n");
+            }
             for(String start: graph.keySet()){
                 outputWriterAdj.write(start);
                 for(String child: graph.get(start)){
@@ -75,6 +82,7 @@ public class CreatePageRankingGraph {
             }
             outputWriter.close();
             outputWriterAdj.close();
+            outputWriterUrlMap.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
