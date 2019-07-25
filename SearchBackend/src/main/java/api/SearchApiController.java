@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import helpers.ResponseParser;
 
 @RestController
 public class SearchApiController {
@@ -32,7 +32,7 @@ public class SearchApiController {
             response.append(inputLine);
         }
         in.close();
-        return response.toString();
+        return ResponseParser.parseJsonResponse(response.toString());
     }
 
     @CrossOrigin(origins = "*")
