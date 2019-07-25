@@ -10,6 +10,7 @@ public class ResponseParser {
         try {
             JSONObject jsonResponse = (JSONObject) parser.parse(response);
             JSONObject solrRespones = (JSONObject) jsonResponse.get("response");
+            JSONObject cleanedResponse = new JSONObject();
             JSONObject parsedResponse = new JSONObject();
             parsedResponse.put("numFound", solrRespones.get("numFound"));
             parsedResponse.put("start", solrRespones.get("start"));
@@ -20,12 +21,15 @@ public class ResponseParser {
                 JSONObject jsonDoc = (JSONObject) doc;
                 parsedDoc.put("url", jsonDoc.get("id"));
                 JSONArray title = (JSONArray) jsonDoc.get("title");
-                parsedDoc.put("title", title.get(0));
+                if(title != null)
+                    parsedDoc.put("title", title.get(0));
                 JSONArray description = (JSONArray) jsonDoc.get("description");
-                parsedDoc.put("description", description.get(0));
+                if(description != null)
+                    parsedDoc.put("description", description.get(0));
                 parsedDocs.add(parsedDoc);
             }
             parsedResponse.put("docs", parsedDocs);
+            cleanedResponse.put("response", parsedResponse);
             return parsedResponse.toString();
         } catch (Exception e){
             e.printStackTrace();

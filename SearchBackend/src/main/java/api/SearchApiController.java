@@ -37,7 +37,7 @@ public class SearchApiController {
 
     @CrossOrigin(origins = "*")
     @RequestMapping("/search")
-    public String getSearchResult(@RequestParam(value = "q", defaultValue = "*:*") String query, @RequestParam(value = "page", defaultValue = "0") String page) throws Exception{
+    public String getSearchResult(@RequestParam(value = "q") String query, @RequestParam(value = "page", defaultValue = "0") String page) throws Exception{
         Log logger = LogFactory.getLog(SearchApiController.class);
         String url = SEARCHBASEURL + "?q=" + query.replace(" ", "%20") + "&start=" + page;
         String response = "";
