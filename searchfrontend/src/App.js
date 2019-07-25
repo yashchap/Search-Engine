@@ -54,33 +54,31 @@ class App extends React.Component {
     var docs = [];
     var pages;
     var no_result_msg;
-    if (!isLoaded) {
-      load = "loading...";
-    }
-    else {
+    
+    if(isLoaded) {
       no_records = this.state.response.numFound;
       docs = this.state.response.docs;
       if(no_records === 0){
         no_result_msg = "No Result found";
       } else {
         pages = (
-          <div>
-            <span className="btn btn-light m-1" onClick={() => this.changePage(-1)}>prev</span>
-            <span>{this.state.page_no}</span>
-            <span className="btn btn-light m-1" onClick={() => this.changePage(1)}>next</span>
+          <div className="text-center">
+            <span className="btn btn-light mt-3" onClick={() => this.changePage(-1)}>prev</span>
+            <span className="m-4">{this.state.page_no}</span>
+            <span className="btn btn-light mt-3" onClick={() => this.changePage(1)}>next</span>
           </div>
         );
       }
     }
     return (
       <div className="container">
-        <div className="row jumbotron bg-white">
+        <div className="row bg-white">
           <div className="col-sm-3"></div>
           <div className="col-sm-8">
             <form className="form-inline md-form form-sm active-cyan-2 mt-5">
-              <input className="form-control form-control-sm mr-3 w-75" type="text" name="query" ref={(query) => this.query = query} placeholder="Search"
+              <input className="form-control form-control-sm mr-3 w-75 p-3" type="text" name="query" ref={(query) => this.query = query} placeholder="Search"
                 aria-label="Search"/>
-              <button><i className="fa fa-search" aria-hidden="true"></i></button>
+              <button className="btn btn-primary pl-5 pr-5"><i className="fa fa-search" aria-hidden="true"></i></button>
             </form>
           </div>
           <div className="col-sm-3"></div>
