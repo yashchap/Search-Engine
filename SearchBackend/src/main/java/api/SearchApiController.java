@@ -3,6 +3,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
@@ -34,6 +35,7 @@ public class SearchApiController {
         return response.toString();
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping("/search")
     public String getSearchResult(@RequestParam(value = "q", defaultValue = "*:*") String query, @RequestParam(value = "page", defaultValue = "0") String page) throws Exception{
         Log logger = LogFactory.getLog(SearchApiController.class);
