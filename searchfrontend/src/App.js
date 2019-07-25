@@ -90,7 +90,7 @@ class App extends React.Component {
             {no_result_msg}
             {docs.map(doc => (
               <div className="mt-5">
-                <div className="text-primary">{doc.title}</div>
+                <a href={doc.url}><div className="text-primary">{doc.title}</div></a>
                 <small className="text-success">{doc.url}</small>
                 <div>{doc.description}</div>
               </div>

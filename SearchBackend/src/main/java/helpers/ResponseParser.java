@@ -4,7 +4,29 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ResponseParser {
+    private static final String FILEPATH = "../SearchWebCrawler/data/reuters/pagerank/url_map.txt";
+    private static Map<String, String> getFileMapping() {
+        Map<String, String> urlMap = new HashMap<String, String>();
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(FILEPATH));
+            String line = reader.readLine();
+            while(line != null) {
+                urlMap.put(line.split(" ")[0], line.split(" ")[1]);
+                line = reader.readLine();
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return urlMap;
+    }
     public static String parseJsonResponse(String response) {
         JSONParser parser = new JSONParser();
         try {
@@ -16,10 +38,16 @@ public class ResponseParser {
             parsedResponse.put("start", solrRespones.get("start"));
             JSONArray solrDocs = (JSONArray) solrRespones.get("docs");
             JSONArray parsedDocs = new JSONArray();
+            Map<String, String> urlMap = getFileMapping();
             for(Object doc: solrDocs) {
                 JSONObject parsedDoc = new JSONObject();
                 JSONObject jsonDoc = (JSONObject) doc;
-                parsedDoc.put("url", jsonDoc.get("id"));
+                String url = (String) jsonDoc.get("id");
+                String dataUrl = url.substring(url.indexOf("data/"));
+                if(urlMap.containsKey(dataUrl)){
+                    url = urlMap.get(dataUrl);
+                }
+                parsedDoc.put("url", url);
                 JSONArray title = (JSONArray) jsonDoc.get("title");
                 if(title != null)
                     parsedDoc.put("title", title.get(0));
