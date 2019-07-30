@@ -15,7 +15,9 @@ import helpers.ResponseParser;
 @RestController
 public class SearchApiController {
     private static final String SEARCHBASEURL = "http://localhost:8983/solr/reuters/select";
-
+    private static final String IMAGESEARCHBASEURL = "http://localhost:8983/solr/images/select";
+    private static final String FILEPATH = "../SearchWebCrawler/data/reuters/pagerank/url_map.txt";
+    private static final String IMAGEFILEPATH = "../SearchWebCrawler/data/reuters/image/imageurlmap.txt";
     private static String get(String url) throws Exception{
         Log logger = LogFactory.getLog(SearchApiController.class);
         URL obj = new URL(url);
@@ -32,7 +34,7 @@ public class SearchApiController {
             response.append(inputLine);
         }
         in.close();
-        return ResponseParser.parseJsonResponse(response.toString());
+        return response.toString();
     }
 
     @CrossOrigin(origins = "*")
@@ -46,7 +48,20 @@ public class SearchApiController {
         } catch (Exception e){
             e.printStackTrace();
         }
-        return response;
+        return ResponseParser.parseJsonResponse(response, FILEPATH);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping("/image")
+    public String getImageResult(@RequestParam(value = "q") String query) throws Exception {
+       String url = IMAGESEARCHBASEURL + "?q=" + query.replace(" ", "%20");
+       String response = "";
+       try {
+           response = get(url);
+       } catch (Exception e){
+           e.printStackTrace();
+       }
+       return ResponseParser.parseJsonResponse(response, IMAGEFILEPATH);
     }
 
 }

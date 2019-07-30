@@ -17,8 +17,10 @@ public class FetchImages {
 
     private static final String DIRPATH = "../SearchWebCrawler/data/reuters/html/";
     private static final String OUTPUTPATH = "../SearchWebCrawler/data/reuters/image/";
+    private static final String OUTPUTURLMAPPATH = "../SearchWebCrawler/data/reuters/image/images_alt/";
     private static final String OUTPUTFILE = "imagemap.csv";
     private static final String OUTPUTFILEJSON = "imagemap.json";
+    private static final String OUTPUTFILEURLMAP = "imageurlmap.txt";
 
     private static Map<String, String> fetchData(String path) {
         Map<String, String> imageMap = new HashMap<>();
@@ -72,22 +74,34 @@ public class FetchImages {
         try {
             FileWriter fw = new FileWriter(OUTPUTPATH + OUTPUTFILE, false);
             FileWriter fw_json = new FileWriter(OUTPUTPATH + OUTPUTFILEJSON, false);
+            FileWriter fw_image_map = new FileWriter(OUTPUTPATH + OUTPUTFILEURLMAP, false);
             JSONArray imageMapArr = new JSONArray();
             for (File file: listOfFiles) {
                 if (file.isFile()) {
                     String filepath = DIRPATH + file.getName();
                     Map<String, String> imageMap = fetchData(filepath);
                     System.out.println("Processing: "+ filepath);
+                    Integer file_no = 1;
+
                     for (String url: imageMap.keySet()) {
+                        FileWriter fw_alt = new FileWriter(OUTPUTURLMAPPATH + file_no.toString() + ".txt", false);
                         JSONObject imageObj = new JSONObject();
                         imageObj.put("url", url);
                         imageObj.put("alt", imageMap.get(url));
                         imageMapArr.add(imageObj);
                         fw.write(url + ";" + imageMap.get(url)+"\n");
+                        String fileUrl = OUTPUTURLMAPPATH + file_no.toString() + ".txt";
+                        fileUrl = fileUrl.substring(fileUrl.indexOf("data/"));
+                        fw_image_map.write(url + " "+ fileUrl + "\n");
+                        fw_alt.write(imageMap.get(url));
+                        fw_alt.close();
+                        file_no++;
                     }
+
                 }
             }
             fw_json.write(imageMapArr.toJSONString());
+            fw_image_map.close();
             fw.close();
             fw_json.close();
         } catch (IOException e) {
