@@ -14,6 +14,7 @@ class Image extends React.Component {
   }
 
   componentDidMount(){
+    console.log("hello images");
     const searchParams = new URLSearchParams(window.location.search);
     var query = searchParams.get("query");
     var page = searchParams.get("page");

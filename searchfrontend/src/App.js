@@ -15,6 +15,7 @@ class App extends React.Component {
   }
 
   componentDidMount(){
+    console.log("hello app");
     const searchParams = new URLSearchParams(window.location.search);
     var query = searchParams.get("query");
     var page = searchParams.get("page");

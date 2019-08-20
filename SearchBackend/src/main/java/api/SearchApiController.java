@@ -54,7 +54,7 @@ public class SearchApiController {
     @CrossOrigin(origins = "*")
     @RequestMapping("/image")
     public String getImageResult(@RequestParam(value = "q") String query) throws Exception {
-       String url = IMAGESEARCHBASEURL + "?q=" + query.replace(" ", "%20");
+       String url = SEARCHBASEURL + "?q=" + query.replace(" ", "%20");
        String response = "";
        try {
            response = get(url);

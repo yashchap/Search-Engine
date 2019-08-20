@@ -17,7 +17,7 @@ public class ResponseParser {
             BufferedReader reader = new BufferedReader(new FileReader(filepath));
             String line = reader.readLine();
             while(line != null) {
-                urlMap.put(line.split(" ")[1], line.split(" ")[0]);
+                urlMap.put(line.split(" ")[0], line.split(" ")[1]);
                 line = reader.readLine();
             }
 
@@ -45,15 +45,16 @@ public class ResponseParser {
                 String dataUrl = url.substring(url.indexOf("data/"));
                 if(urlMap.containsKey(dataUrl)){
                     url = urlMap.get(dataUrl);
+                    parsedDoc.put("url", url);
+                    JSONArray title = (JSONArray) jsonDoc.get("title");
+                    if(title != null)
+                        parsedDoc.put("title", title.get(0));
+                    JSONArray description = (JSONArray) jsonDoc.get("description");
+                    if(description != null)
+                        parsedDoc.put("description", description.get(0));
+                    parsedDocs.add(parsedDoc);
                 }
-                parsedDoc.put("url", url);
-                JSONArray title = (JSONArray) jsonDoc.get("title");
-                if(title != null)
-                    parsedDoc.put("title", title.get(0));
-                JSONArray description = (JSONArray) jsonDoc.get("description");
-                if(description != null)
-                    parsedDoc.put("description", description.get(0));
-                parsedDocs.add(parsedDoc);
+
             }
             parsedResponse.put("docs", parsedDocs);
             return parsedResponse.toString();

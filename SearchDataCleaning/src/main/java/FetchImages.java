@@ -91,8 +91,8 @@ public class FetchImages {
                         imageMapArr.add(imageObj);
                         fw.write(url + ";" + imageMap.get(url)+"\n");
                         String fileUrl = OUTPUTURLMAPPATH + file_no.toString() + ".txt";
-                        fileUrl = fileUrl.substring(fileUrl.indexOf("data/"));
-                        fw_image_map.write(url + " "+ fileUrl + "\n");
+                        filepath = filepath.substring(filepath.indexOf("data/"));
+                        fw_image_map.write(filepath + " "+ url + "\n");
                         fw_alt.write(imageMap.get(url));
                         fw_alt.close();
                         file_no++;
